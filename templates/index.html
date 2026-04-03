@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crypto Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body style="font-family: Arial; padding: 20px;">
+
+<h1>📊 Cryptocurrency Dashboard</h1>
+
+<label>Select Coin:</label>
+<select id="coinSelect" onchange="loadData()">
+    {% for coin in coins %}
+        <option value="{{coin}}">{{coin}}</option>
+    {% endfor %}
+</select>
+
+<h3>📊 Stats</h3>
+<p>Latest Price: <span id="latest"></span></p>
+<p>Highest Price: <span id="high"></span></p>
+<p>Lowest Price: <span id="low"></span></p>
+
+
+
+<canvas id="chart"></canvas>
+
+<script>
+let chart;
+
+function loadData() {
+    let coin = document.getElementById("coinSelect").value;
+
+    fetch(`/get_coin_data/${coin}`)
+        .then(res => res.json())
+        .then(data => {
+
+            document.getElementById("latest").innerText = data.latest;
+            document.getElementById("high").innerText = data.high;
+            document.getElementById("low").innerText = data.low;
+
+            let ctx = document.getElementById("chart").getContext("2d");
+
+            if (chart) chart.destroy();
+
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.dates,
+                    datasets: [{
+                        label: coin,
+                        data: data.prices
+                    }]
+                }
+            });
+        });
+}
+
+window.onload = loadData;
+</script>
+
+</body>
+</html>
