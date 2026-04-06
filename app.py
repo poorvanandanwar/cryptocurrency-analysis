@@ -7,7 +7,7 @@ app = Flask(__name__)
 # -------------------------------
 # LOAD DATA
 # -------------------------------
-BASE = os.getcwd()   # for local
+BASE = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(BASE, "data/processed")
 
 df = pd.read_csv(os.path.join(DATA_PATH, "all_coins_clean.csv"))
